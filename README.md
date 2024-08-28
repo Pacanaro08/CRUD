@@ -1,0 +1,1 @@
+This will be a CRUD practice with tkinter and sqlite3
