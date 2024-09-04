@@ -1,20 +1,24 @@
 from tkinter import *
+import data
 
 class Window:
     def __init__(self, master=None) -> None:
         """initialize the application"""
 
         self.master = master
+        self.master.grid_columnconfigure(0, weight=1)
         self.build()
 
+    
     def build(self) -> None:
         """call the building events"""
 
         self.config()
         self.frame()
         self.label()
-        self.text()
+        self.entry()
         self.button()
+    
     
     def config(self) -> None:
         """pattern configuration"""
@@ -23,31 +27,28 @@ class Window:
         self.subtitle_font = ("Verdana", "15")
         self.text_font = ("Verdana", "12")
     
+    
     def frame(self) -> None:
         """frame building"""
 
-        self.master.grid_columnconfigure(0, weight=1)
-
         self.main_window = Frame(self.master)
         self.main_window.grid(row=0, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
+        self.main_window.grid_columnconfigure(0, weight=1)
 
         self.email_frame = Frame(self.master)
         self.email_frame.grid(row=1, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
+        self.email_frame.grid_columnconfigure(0, weight=0)
+        self.email_frame.grid_columnconfigure(1, weight=1)
 
         self.password_frame = Frame(self.master)
         self.password_frame.grid(row=2, column=0, columnspan=2, pady=(10, 20), padx=10, sticky="nsew")
+        self.password_frame.grid_columnconfigure(0, weight=0)
+        self.password_frame.grid_columnconfigure(1, weight=1)
 
         self.action_frame = Frame(self.master)
         self.action_frame.grid(row=3, column=0, columnspan=2, pady=(10, 20), padx=10, sticky="nsew")
-
-
-        self.main_window.grid_columnconfigure(0, weight=1)
-        self.email_frame.grid_columnconfigure(0, weight=0)
-        self.email_frame.grid_columnconfigure(1, weight=1)
-        self.password_frame.grid_columnconfigure(0, weight=0)
-        self.password_frame.grid_columnconfigure(1, weight=1)
         self.action_frame.grid_columnconfigure(0, weight=0)
-        self.action_frame.grid_columnconfigure(1, weight=0)
+        self.action_frame.grid_columnconfigure(1, weight=1)
     
     
     def label(self) -> None:
@@ -70,8 +71,9 @@ class Window:
         self.password_label.grid(row=0, column=0, padx=(100,0), sticky="w")
 
     
-    def text(self) -> None:
-        """text building"""
+    
+    def entry(self) -> None:
+        """entry building"""
 
         self.email_text = Entry(self.email_frame)
         self.email_text.grid(row=0, column=1, sticky="we", padx=(5, 100))
@@ -80,6 +82,7 @@ class Window:
         self.password_text.configure(show="*")
         self.password_text.grid(row=0, column=1, sticky="we", padx=(5, 100))
 
+   
     def button(self) -> None:
         """button building"""
 
@@ -89,16 +92,29 @@ class Window:
         self.register = Button(self.action_frame, text="Register", command=self.registerIn, width=25, activebackground="gray", activeforeground="white")
         self.register.grid(row=0, column=1, padx=(5,100))
 
+    
     def actionLogIn(self) -> None:
-        print("try login")
+        """does login"""
 
+        self.data_window = Toplevel(self.master)
+        self.data_app = data.Window(self.data_window)
+
+    
     def registerIn(self) -> None:
-        print("try register")
+        """register user"""
+
+        self.data_window = Toplevel(self.master)
+        self.data_app = data.Window(self.data_window)
 
 
-root = Tk()
-root.title("")
-root.geometry("600x600+400+200") #Because I want it here
-root.resizable(True, True)
-Window(root)
-root.mainloop()
+def main():
+    root = Tk()
+    root.title("")
+    root.geometry("600x600+400+200")
+    root.resizable(False, False)
+    Window(root)
+    root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
