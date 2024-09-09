@@ -97,14 +97,14 @@ class Window:
         """does login"""
 
         self.data_window = Toplevel(self.master)
-        self.data_app = data.Window(self.data_window)
+        self.data_app = data.Window(self.data_window, "login")
 
     
     def registerIn(self) -> None:
         """register user"""
 
         self.data_window = Toplevel(self.master)
-        self.data_app = data.Window(self.data_window)
+        self.data_app = data.Window(self.data_window, "register")
 
 
 def main():

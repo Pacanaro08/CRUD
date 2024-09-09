@@ -2,7 +2,7 @@ from tkinter import *
 import db
 
 class Window():
-    def __init__(self, master=None) -> None:
+    def __init__(self, master, name_param) -> None:
         """initialize the application"""
 
         self.master = master
@@ -11,7 +11,11 @@ class Window():
         self.master.resizable(False, False)
         self.master.grid_columnconfigure(0, weight=1)
 
+        self.name_param = name_param
+
         self.build()
+        if name_param == "login":
+            self.retrieve_data()
     
     
     def build(self) -> None:
@@ -42,33 +46,37 @@ class Window():
         self.main_window.grid(row=1, column=0, columnspan=2, pady=(0, 50), padx=10, sticky="nsew")
         self.main_window.grid_columnconfigure(0, weight=1)
 
+        self.id_frame = Frame(self.master)
+        self.id_frame.grid(row=2, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
+        self.id_frame.grid_columnconfigure(0, weight=0)
+
         self.name_frame = Frame(self.master)
-        self.name_frame.grid(row=2, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
+        self.name_frame.grid(row=3, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
         self.name_frame.grid_columnconfigure(0, weight=0)
         self.name_frame.grid_columnconfigure(1, weight=1)
 
         self.phone_frame = Frame(self.master)
-        self.phone_frame.grid(row=3, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
+        self.phone_frame.grid(row=4, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
         self.phone_frame.grid_columnconfigure(0, weight=0)
         self.phone_frame.grid_columnconfigure(1, weight=1)
 
         self.email_frame = Frame(self.master)
-        self.email_frame.grid(row=4, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
+        self.email_frame.grid(row=5, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
         self.email_frame.grid_columnconfigure(0, weight=0)
         self.email_frame.grid_columnconfigure(1, weight=1)
 
         self.address_frame = Frame(self.master)
-        self.address_frame.grid(row=5, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
+        self.address_frame.grid(row=6, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
         self.address_frame.grid_columnconfigure(0, weight=0)
         self.address_frame.grid_columnconfigure(1, weight=1)
 
         self.password_frame = Frame(self.master)
-        self.password_frame.grid(row=6, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
+        self.password_frame.grid(row=7, column=0, columnspan=2, pady=(20, 10), padx=10, sticky="nsew")
         self.password_frame.grid_columnconfigure(0, weight=0)
         self.password_frame.grid_columnconfigure(1, weight=1)
 
         self.action_frame = Frame(self.master)
-        self.action_frame.grid(row=7, column=0, columnspan=2, pady=(30, 10), padx=10, sticky="nsew")
+        self.action_frame.grid(row=8, column=0, columnspan=2, pady=(30, 10), padx=10, sticky="nsew")
         self.action_frame.grid_columnconfigure(0, weight=0)
         self.action_frame.grid_columnconfigure(1, weight=1)
     
@@ -105,6 +113,9 @@ class Window():
     def entry(self) -> None:
         """entry building"""
 
+        self.id_entry = Entry(self.id_frame, state="disabled")
+        self.id_entry.grid(row=0, column=1, sticky="e", padx=(150,0))
+
         self.name_entry = Entry(self.name_frame)
         self.name_entry.grid(row=0, column=1, sticky="we", padx=(0,150))
 
@@ -139,16 +150,32 @@ class Window():
 
     
     def save_changes(self) -> None:
-        print('hello')
+        """create user if register else update"""
+
+        if self.name_param == "register":
+            #call insert sqlite method
+            pass
+        elif self.name_param == "login":
+            #call update sqlite method
+            pass
+            
 
 
     def delete_account(self) -> None:
-        print('goodbye')
+        """delete user if login"""
+
+        if self.name_param == "login":
+            #call delete sqlite method
+            pass
+
+
+    def retrieve_data() -> None:
+        pass
 
 
 def main():
     root = Tk()
-    Window(root)
+    Window(root, "main")
     root.mainloop()
 
 
