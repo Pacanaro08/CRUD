@@ -1,0 +1,5 @@
+- configure sqlite deletion in events;
+- select and retrieve datas from user id;
+- error message if happens;
+- verify email in registration;
+- do the login stuff with email and password verification.

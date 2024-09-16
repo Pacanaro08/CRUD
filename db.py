@@ -4,23 +4,26 @@ import sqlite3
 def create_table() -> None:
     """create the table if not exists"""
     
-    conn = sqlite3.connect("user-crud.db")
-    conn.execute("""
-    CREATE TABLE IF NOT EXISTS user (
-        user_id INTEGER PRIMARY KEY AUTOINCREMENT
-        user_email TEXT NOT NULL,
-        user_password TEXT NOT NULL,
-        user_name TEXT,
-        user_phone INTEGER,
-        user_address TEXT
-    )
-    """)
+    try:
+        conn = sqlite3.connect('user-crud.db')
+        conn.execute("""
+        CREATE TABLE IF NOT EXISTS user (
+            user_id INTEGER PRIMARY KEY AUTOINCREMENT
+            user_email TEXT NOT NULL,
+            user_password TEXT NOT NULL,
+            user_name TEXT,
+            user_phone INTEGER,
+            user_address TEXT
+        )
+        """)
+    except:
+        print("create'nt")
 
 def create_user(user_data:dict) -> None:
     """create new user"""
 
     try:
-        conn = sqlite3.connect("user-crud.db")
+        conn = sqlite3.connect('user-crud.db')
         cursor = conn.cursor()
 
         query = """INSERT INTO user (user_email, user_password, user_name, user_phone, user_address)
@@ -34,7 +37,7 @@ def create_user(user_data:dict) -> None:
         ))
 
         conn.commit()
-        return "Success!"
+        return 'Success!'
     
     except sqlite3.IntegrityError as error:
         return error
@@ -47,7 +50,7 @@ def update_user(user_data:dict) -> None:
     """update user based on id"""
 
     try:
-        conn = sqlite3.connect("user-crud.db")
+        conn = sqlite3.connect('user-crud.db')
         cursor = conn.cursor()
 
         query = """UPDATE user SET user_email = ?, user_password = ?, user_name = ?, user_phone = ?,
@@ -62,7 +65,7 @@ def update_user(user_data:dict) -> None:
         ))
 
         conn.commit()
-        return "Success!"
+        return 'Success!'
 
     except sqlite3.IntegrityError as error:
         return error
@@ -75,14 +78,14 @@ def delete_user(user_id:int) -> None:
     """delete user based on id"""
 
     try:
-        conn = sqlite3.connect("user-crud.db")
+        conn = sqlite3.connect('user-crud.db')
         cursor = conn.cursor()
 
         query = """DELETE user WHERE user_id = ?"""
         cursor.execute(query, (user_id))
 
         conn.commit()
-        return "Success!"
+        return 'Success!'
 
     except sqlite3.IntegrityError as error:
         return error
@@ -94,7 +97,7 @@ def delete_user(user_id:int) -> None:
 def user_data(user_id:int) -> None:
     """get user info based on id"""
 
-    conn = sqlite3.connect("user-crud.db")
+    conn = sqlite3.connect('user-crud.db')
     cursor = conn.cursor()
 
     query = """SELECT * FROM user WHERE user_id = ?"""
@@ -116,7 +119,7 @@ def user_data(user_id:int) -> None:
 def verify_email_existance(user_email:str) -> None:
     """see if the e-mail already exists in database"""
 
-    conn = sqlite3.connect("user-crud.db")
+    conn = sqlite3.connect('user-crud.db')
     cursor = conn.cursor()
 
     query = """SELECT * FROM user WHERE user_email = ?"""
@@ -125,4 +128,4 @@ def verify_email_existance(user_email:str) -> None:
     result = cursor.fetchone()
 
     conn.close()
-    return None if result is None else "E-mail already exists!"
+    return None if result is None else 'E-mail already exists!'
