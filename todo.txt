@@ -1,5 +1,5 @@
-- configure sqlite deletion in events;
-- select and retrieve datas from user id;
-- error message if happens;
-- verify email in registration;
+- configure sqlite deletion in events; #done
+- select and retrieve datas from user email and password; #done
+- error message if happens; #done
+- verify email in registration; #done
 - do the login stuff with email and password verification.

@@ -33,6 +33,7 @@ class Window():
 
         self.title_font = ('Verdana', '18', 'bold')
         self.text_font = ('Verdana', '12')
+        self.message_font = ('Verdana', '8', 'bold')
 
     
     def frame(self) -> None:
@@ -43,7 +44,7 @@ class Window():
         self.logout_frame.grid_columnconfigure(0, weight=1)
 
         self.main_window = Frame(self.master)
-        self.main_window.grid(row=1, column=0, columnspan=2, pady=(0, 50), padx=10, sticky='nsew')
+        self.main_window.grid(row=1, column=0, columnspan=2, pady=(0, 20), padx=10, sticky='nsew')
         self.main_window.grid_columnconfigure(0, weight=1)
 
         self.id_frame = Frame(self.master)
@@ -75,8 +76,13 @@ class Window():
         self.password_frame.grid_columnconfigure(0, weight=0)
         self.password_frame.grid_columnconfigure(1, weight=1)
 
+        self.message_frame = Frame(self.master)
+        self.message_frame.grid(row=8, column=0, columnspan=2, pady=(0, 5), padx=10, sticky='nsew')
+        self.message_frame.grid_columnconfigure(0, weight=0)
+        self.message_frame.grid_columnconfigure(1, weight=1)
+
         self.action_frame = Frame(self.master)
-        self.action_frame.grid(row=8, column=0, columnspan=2, pady=(30, 10), padx=10, sticky='nsew')
+        self.action_frame.grid(row=9, column=0, columnspan=2, pady=(0, 10), padx=10, sticky='nsew')
         self.action_frame.grid_columnconfigure(0, weight=0)
         self.action_frame.grid_columnconfigure(1, weight=1)
     
@@ -107,6 +113,10 @@ class Window():
         self.password_label = Label(self.password_frame, text='Password:')
         self.password_label.config(font=self.text_font)
         self.password_label.grid(row=0, column=0, padx=(150,0), sticky='w')
+
+        self.message_label = Label(self.message_frame, fg='orange', wraplength=500)
+        self.message_label.config(font=self.message_font)
+        self.message_label.grid(row=0, column=0, pady=(0, 10), padx=(10, 0), columnspan=2, sticky='n')
 
     
     
@@ -157,37 +167,65 @@ class Window():
     def save_changes(self) -> None:
         """create user if register else update"""
 
-        user_data = {
-            'id':self.id_entry.get(),
-            'name':self.name_entry.get(),
-            'phone':self.phone_entry.get(),
-            'email':self.email_entry.get(),
-            'address':self.address_entry.get(),
-            'password':self.password_entry.get()
-        }
+        if self.email_verification():
+            user_data = {
+                'id':self.id_entry.get(),
+                'name':self.name_entry.get(),
+                'phone':self.phone_entry.get(),
+                'email':self.email_entry.get(),
+                'address':self.address_entry.get(),
+                'password':self.password_entry.get()
+            }
 
-        error = self.verify_blank_fields(user_data)
-        if error == None:
-            if self.name_param == 'register':
-                db.create_user(user_data=user_data)
-            elif self.name_param == 'login':
-                db.update_user(user_data=user_data)
+            error = self.verify_blank_fields(user_data)
+            if error == None:
+                if self.name_param == 'register':
+                    self.message_label.config(text=db.create_user(user_data=user_data))
+                elif self.name_param == 'login':
+                    self.message_label.config(text=db.update_user(user_data=user_data))
+                else:
+                    self.message_label.config(text=user_data)
             else:
-                print(user_data)
-        else:
-            print(error)
-            
+                self.message_label.config(text=error)
+    
+
+    def email_verification(self) -> False:
+        """verify email existance"""
+
+        if self.name_param == 'register':
+            error = db.verify_email_existance(self.email_entry.get())
+            self.message_label.config(text=error)
+            return False if error != None else True
 
 
     def delete_account(self) -> None:
         """delete user if login"""
 
         if self.name_param == 'login':
-            pass
+            self.message_label.config(text=db.delete_user(self.id_entry.get()))
 
 
     def retrieve_user_data(self) -> None:
-        pass
+        """select in database based on email and password"""
+
+        if self.name_param == 'login':
+            self.user_data = db.user_data(self.email_entry.get(), self.password_entry.get())
+            
+            self.name_entry.delete(0, END)
+            self.name_entry.insert(0, self.user_data['name'])
+
+            self.phone_entry.delete(0, END)
+            self.phone_entry.insert(0, self.user_data['phone'])
+
+            self.email_entry.delete(0, END)
+            self.email_entry.insert(0, self.user_data['email'])
+
+            self.address_entry.delete(0, END)
+            self.address_entry.insert(0, self.user_data['address'])
+
+            self.id_entry.delete(0, END)
+            self.id_entry.insert(0, self.user_data['id'])
+
 
 
     def verify_blank_fields(self, user_data:dict) -> None:

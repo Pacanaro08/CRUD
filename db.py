@@ -94,14 +94,14 @@ def delete_user(user_id:int) -> None:
         conn.close()
 
 
-def user_data(user_id:int) -> None:
-    """get user info based on id"""
+def user_data(user_email:str, user_password:str) -> None:
+    """get user info based on email and password"""
 
     conn = sqlite3.connect('user-crud.db')
     cursor = conn.cursor()
 
-    query = """SELECT * FROM user WHERE user_id = ?"""
-    cursor.execute(query, (user_id))
+    query = """SELECT * FROM user WHERE user_email = ? AND user_password = ?"""
+    cursor.execute(query, (user_email, user_password))
 
     result = cursor.fetchone()
 
