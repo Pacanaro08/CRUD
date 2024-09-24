@@ -2,4 +2,6 @@
 - select and retrieve datas from user email and password; #done
 - error message if happens; #done
 - verify email in registration; #done
-- do the login stuff with email and password verification.
+- do the login stuff with email and password verification. #done
+
+- testing, fixing and adjusting

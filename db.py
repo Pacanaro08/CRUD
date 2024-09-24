@@ -8,7 +8,7 @@ def create_table() -> None:
         conn = sqlite3.connect('user-crud.db')
         conn.execute("""
         CREATE TABLE IF NOT EXISTS user (
-            user_id INTEGER PRIMARY KEY AUTOINCREMENT
+            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_email TEXT NOT NULL,
             user_password TEXT NOT NULL,
             user_name TEXT,
@@ -18,6 +18,7 @@ def create_table() -> None:
         """)
     except:
         print("create'nt")
+
 
 def create_user(user_data:dict) -> None:
     """create new user"""
@@ -29,11 +30,11 @@ def create_user(user_data:dict) -> None:
         query = """INSERT INTO user (user_email, user_password, user_name, user_phone, user_address)
          VALUES (?, ?, ?, ?, ?)"""
         cursor.execute(query, (
-            user_data.get('email'), 
+            user_data.get('email').lower(), 
             user_data.get('password'), 
-            user_data.get('name'), 
+            user_data.get('name').upper(), 
             user_data.get('phone'), 
-            user_data.get('address')
+            user_data.get('address').upper()
         ))
 
         conn.commit()
@@ -56,11 +57,11 @@ def update_user(user_data:dict) -> None:
         query = """UPDATE user SET user_email = ?, user_password = ?, user_name = ?, user_phone = ?,
         user address = ? WHERE user_id = ?"""
         cursor.execute(query, (
-            user_data.get('email'), 
+            user_data.get('email').lower(), 
             user_data.get('password'), 
-            user_data.get('name'), 
+            user_data.get('name').upper(), 
             user_data.get('phone'), 
-            user_data.get('address'),
+            user_data.get('address').upper(),
             user_data.get('id')
         ))
 
@@ -81,7 +82,7 @@ def delete_user(user_id:int) -> None:
         conn = sqlite3.connect('user-crud.db')
         cursor = conn.cursor()
 
-        query = """DELETE user WHERE user_id = ?"""
+        query = """DELETE FROM user WHERE user_id = ?"""
         cursor.execute(query, (user_id))
 
         conn.commit()
@@ -101,7 +102,7 @@ def user_data(user_email:str, user_password:str) -> None:
     cursor = conn.cursor()
 
     query = """SELECT * FROM user WHERE user_email = ? AND user_password = ?"""
-    cursor.execute(query, (user_email, user_password))
+    cursor.execute(query, (user_email.lower(), user_password))
 
     result = cursor.fetchone()
 
@@ -123,9 +124,36 @@ def verify_email_existance(user_email:str) -> None:
     cursor = conn.cursor()
 
     query = """SELECT * FROM user WHERE user_email = ?"""
-    cursor.execute(query, (user_email))
+    cursor.execute(query, (user_email.lower(),))
 
     result = cursor.fetchone()
 
     conn.close()
     return None if result is None else 'E-mail already exists!'
+
+
+def check_login_and_password(user_email:str, user_password:str) -> None:
+    """checks correct email and password"""
+
+    conn = sqlite3.connect('user-crud.db')
+    cursor = conn.cursor()
+
+    query = """SELECT * FROM user WHERE user_email = ? AND user_password = ?"""
+    cursor.execute(query, (user_email.lower(), user_password))
+
+    result = cursor.fetchone()
+    conn.close()
+
+    return 'Incorrect E-mail or Password' if result is None else 'login'
+
+def select() -> None:
+    conn = sqlite3.connect('user-crud.db')
+    cursor = conn.cursor()
+
+    query = """SELECT * FROM user"""
+    cursor.execute(query)
+
+    result = cursor.fetchone()
+    conn.close()
+
+    print(result)

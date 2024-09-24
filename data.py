@@ -2,7 +2,7 @@ from tkinter import *
 import db
 
 class Window():
-    def __init__(self, master, name_param) -> None:
+    def __init__(self, master, name_param, email, password) -> None:
         """initialize the application"""
 
         self.master = master
@@ -15,7 +15,7 @@ class Window():
 
         self.build()
         if name_param == 'login':
-            self.retrieve_user_data()
+            self.retrieve_user_data(email, password)
     
     
     def build(self) -> None:
@@ -123,7 +123,9 @@ class Window():
     def entry(self) -> None:
         """entry building"""
 
-        self.id_entry = Entry(self.id_frame, state='disabled')
+        self.id_entry = Entry(self.id_frame)
+        if self.name_param == 'register':
+            self.id_entry.config(state='disabled')
         self.id_entry.grid(row=0, column=1, sticky='e', padx=(150,0))
 
         self.name_entry = Entry(self.name_frame)
@@ -202,29 +204,34 @@ class Window():
         """delete user if login"""
 
         if self.name_param == 'login':
-            self.message_label.config(text=db.delete_user(self.id_entry.get()))
+            error = db.delete_user(self.id_entry.get())
+            self.message_label.config(text=error)
+            if error == 'Success!':
+                self.master.destroy()
 
 
-    def retrieve_user_data(self) -> None:
+
+    def retrieve_user_data(self, email:str, password:str) -> None:
         """select in database based on email and password"""
 
         if self.name_param == 'login':
-            self.user_data = db.user_data(self.email_entry.get(), self.password_entry.get())
-            
+            self.user_data = db.user_data(email, password)
+
             self.name_entry.delete(0, END)
-            self.name_entry.insert(0, self.user_data['name'])
+            self.name_entry.insert(0, self.user_data['user_name'])
 
             self.phone_entry.delete(0, END)
-            self.phone_entry.insert(0, self.user_data['phone'])
+            self.phone_entry.insert(0, self.user_data['user_phone'])
 
             self.email_entry.delete(0, END)
-            self.email_entry.insert(0, self.user_data['email'])
+            self.email_entry.insert(0, self.user_data['user_email'])
 
             self.address_entry.delete(0, END)
-            self.address_entry.insert(0, self.user_data['address'])
+            self.address_entry.insert(0, self.user_data['user_address'])
 
             self.id_entry.delete(0, END)
-            self.id_entry.insert(0, self.user_data['id'])
+            self.id_entry.insert(0, self.user_data['user_id'])
+            self.id_entry.config(state='disabled')
 
 
 
@@ -239,7 +246,7 @@ class Window():
 
 def main():
     root = Tk()
-    Window(root, 'main')
+    Window(root, 'main', '', '')
     root.mainloop()
 
 

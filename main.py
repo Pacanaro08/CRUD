@@ -1,5 +1,6 @@
 from tkinter import *
 import data
+import db
 
 class Window:
     def __init__(self, master=None) -> None:
@@ -18,6 +19,8 @@ class Window:
         self.label()
         self.entry()
         self.button()
+        db.create_table()
+        db.select()
     
     
     def config(self) -> None:
@@ -26,6 +29,7 @@ class Window:
         self.title_font = ('Verdana', '18', 'bold')
         self.subtitle_font = ('Verdana', '15')
         self.text_font = ('Verdana', '12')
+        self.message_font = ('Verdana', '8', 'bold')
     
     
     def frame(self) -> None:
@@ -45,8 +49,13 @@ class Window:
         self.password_frame.grid_columnconfigure(0, weight=0)
         self.password_frame.grid_columnconfigure(1, weight=1)
 
+        self.message_frame = Frame(self.master)
+        self.message_frame.grid(row=3, column=0, columnspan=2, pady=(0, 5), padx=10, sticky='nsew')
+        self.message_frame.grid_columnconfigure(0, weight=0)
+        self.message_frame.grid_columnconfigure(1, weight=1)
+
         self.action_frame = Frame(self.master)
-        self.action_frame.grid(row=3, column=0, columnspan=2, pady=(10, 20), padx=10, sticky='nsew')
+        self.action_frame.grid(row=4, column=0, columnspan=2, pady=(10, 20), padx=10, sticky='nsew')
         self.action_frame.grid_columnconfigure(0, weight=0)
         self.action_frame.grid_columnconfigure(1, weight=1)
     
@@ -70,6 +79,9 @@ class Window:
         self.password_label['font'] = self.text_font
         self.password_label.grid(row=0, column=0, padx=(100,0), sticky='w')
 
+        self.message_label = Label(self.message_frame, fg='orange', wraplength=500)
+        self.message_label.config(font=self.message_font)
+        self.message_label.grid(row=0, column=0, pady=(0, 10), padx=(10, 0), columnspan=2, sticky='n')
     
     
     def entry(self) -> None:
@@ -96,15 +108,19 @@ class Window:
     def actionLogIn(self) -> None:
         """does login"""
 
-        self.data_window = Toplevel(self.master)
-        self.data_app = data.Window(self.data_window, 'login')
+        error = db.check_login_and_password(self.email_text.get(), self.password_text.get())
+        if error == 'login':
+            self.data_window = Toplevel(self.master)
+            self.data_app = data.Window(self.data_window, error, self.email_text.get(), self.password_text.get())
+        else:
+            self.message_label.config(text=error)
 
     
     def registerIn(self) -> None:
         """register user"""
 
         self.data_window = Toplevel(self.master)
-        self.data_app = data.Window(self.data_window, 'register')
+        self.data_app = data.Window(self.data_window, 'register', '', '')
 
 
 def main():
