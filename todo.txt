@@ -3,5 +3,12 @@
 - error message if happens; #done
 - verify email in registration; #done
 - do the login stuff with email and password verification. #done
+- verify phone entry (to only accept numbers!)
 
 - testing, fixing and adjusting
+Step to step:
+1- register (all correct data, missing data and no data) (try putting str on int) #ok
+2- login (wrong email, wrong password and both correct) #ok
+3- try register with same email as the one already created #ok
+4- edit profile and password (try change de email to one already created) #ok
+5- delete any account #ok

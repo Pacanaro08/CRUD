@@ -34,6 +34,7 @@ class Window():
         self.title_font = ('Verdana', '18', 'bold')
         self.text_font = ('Verdana', '12')
         self.message_font = ('Verdana', '8', 'bold')
+        self.validate_digit = (self.master.register(self.only_numbers), '%S')
 
     
     def frame(self) -> None:
@@ -132,7 +133,7 @@ class Window():
         self.name_entry.grid(row=0, column=1, sticky='we', padx=(0,150))
         self.name_entry.focus_set()
 
-        self.phone_entry = Entry(self.phone_frame)
+        self.phone_entry = Entry(self.phone_frame, validate='key', validatecommand=self.validate_digit)
         self.phone_entry.grid(row=0, column=1, sticky='we', padx=(0,150))
 
         self.email_entry = Entry(self.email_frame)
@@ -198,6 +199,13 @@ class Window():
             error = db.verify_email_existance(self.email_entry.get())
             self.message_label.config(text=error)
             return False if error != None else True
+        elif self.name_param == 'login':
+            error = None
+            email = db.return_id_email(self.id_entry.get())[0]
+            if email != self.email_entry.get():
+                error = 'E-mail already exists!'
+                self.message_label.config(text=error)
+            return False if error != None else True
 
 
     def delete_account(self) -> None:
@@ -233,6 +241,9 @@ class Window():
             self.id_entry.insert(0, self.user_data['user_id'])
             self.id_entry.config(state='disabled')
 
+            self.password_entry.delete(0, END)
+            self.password_entry.insert(0, self.user_data['user_password'])
+
 
 
     def verify_blank_fields(self, user_data:dict) -> None:
@@ -243,6 +254,12 @@ class Window():
         else:
             return 'Please, fill the field(s): ' + ', '.join(key for key, value in user_data.items() if value.strip() == '' and key != 'id')
 
+
+    def only_numbers(self, char:str) -> None:
+        """validates if is a number"""
+
+        return char.isdigit()
+    
 
 def main():
     root = Tk()

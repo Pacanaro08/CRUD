@@ -89,6 +89,7 @@ class Window:
 
         self.email_text = Entry(self.email_frame)
         self.email_text.grid(row=0, column=1, sticky='we', padx=(5, 100))
+        self.email_text.focus_set()
 
         self.password_text = Entry(self.password_frame)
         self.password_text.configure(show='*')

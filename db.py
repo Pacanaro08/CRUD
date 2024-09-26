@@ -55,7 +55,7 @@ def update_user(user_data:dict) -> None:
         cursor = conn.cursor()
 
         query = """UPDATE user SET user_email = ?, user_password = ?, user_name = ?, user_phone = ?,
-        user address = ? WHERE user_id = ?"""
+        user_address = ? WHERE user_id = ?"""
         cursor.execute(query, (
             user_data.get('email').lower(), 
             user_data.get('password'), 
@@ -132,6 +132,21 @@ def verify_email_existance(user_email:str) -> None:
     return None if result is None else 'E-mail already exists!'
 
 
+def return_id_email(id:int) -> None:
+    """returns email based on id"""
+
+    conn = sqlite3.connect('user-crud.db')
+    cursor = conn.cursor()
+
+    query = """SELECT user_email FROM user WHERE user_id = ?"""
+    cursor.execute(query, (id))
+
+    result = cursor.fetchone()
+
+    conn.close()
+    return None if result is None else result
+
+
 def check_login_and_password(user_email:str, user_password:str) -> None:
     """checks correct email and password"""
 
@@ -146,6 +161,7 @@ def check_login_and_password(user_email:str, user_password:str) -> None:
 
     return 'Incorrect E-mail or Password' if result is None else 'login'
 
+
 def select() -> None:
     conn = sqlite3.connect('user-crud.db')
     cursor = conn.cursor()
@@ -153,7 +169,7 @@ def select() -> None:
     query = """SELECT * FROM user"""
     cursor.execute(query)
 
-    result = cursor.fetchone()
+    result = cursor.fetchall()
     conn.close()
 
     print(result)
